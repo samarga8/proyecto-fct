@@ -1,4 +1,4 @@
-# 🚗 Sistema de Gestión de Taller Mecánico (AutoTaller)
+# 🚗 Sistema de Gestión de Taller Mecánico (Taller Mecánico)
 
 Bienvenido al repositorio del proyecto **Taller Mecánico**. Este sistema es una aplicación web completa para la gestión integral de un taller mecánico, permitiendo administrar clientes, vehículos, órdenes de reparación, inventario, facturación y pagos.
 
