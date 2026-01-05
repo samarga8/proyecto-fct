@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Factura</title>
+</head>
+
+<body style="margin:0;padding:0;background-color:#f5f5f5;font-family:Arial,Helvetica,sans-serif;">
+
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color:#f5f5f5;">
+    <tr>
+      <td align="center" style="padding:20px 0;">
+        <table width="700" cellpadding="0" cellspacing="0" style="background-color:#ffffff;border:1px solid #dddddd;">
+          <tr>
+            <td style="padding:20px;border-bottom:1px solid #dddddd;">
+              <table width="100%">
+                <tr>
+                  <td style="font-size:20px;font-weight:bold;">
+                    Factura Nº <span th:text="${EmailFacturaDTO.numeroFactura}"></span>
+                  </td>
+                  <td align="right" style="font-size:14px;color:#666;">
+                    Fecha: <span th:text="${EmailFacturaDTO.fechaFactura}"></span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:20px;">
+              <p style="margin:0 0 10px 0;font-weight:bold;font-size:16px;">
+                Datos del cliente
+              </p>
+              <table width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td style="font-size:14px;line-height:1.6;">
+                    <strong>Nombre:</strong>
+                    <span th:text="${EmailFacturaDTO.clienteNombre}"></span><br>
+
+                    <strong>Dirección:</strong>
+                    <span th:text="${EmailFacturaDTO.clienteDireccion}"></span><br>
+
+                    <strong>Email:</strong>
+                    <span th:text="${EmailFacturaDTO.clienteEmail}"></span><br>
+
+                    <strong>Teléfono:</strong>
+                    <span th:text="${EmailFacturaDTO.clienteTelefono}"></span>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:0 20px 20px 20px;">
+              <table width="100%" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">
+                <thead>
+                  <tr>
+                    <th style="border:1px solid #333;padding:8px;background:#333;color:#fff;font-size:14px;text-align:left;">
+                      Concepto
+                    </th>
+                    <th style="border:1px solid #333;padding:8px;background:#333;color:#fff;font-size:14px;text-align:center;">
+                      Cantidad
+                    </th>
+                    <th style="border:1px solid #333;padding:8px;background:#333;color:#fff;font-size:14px;text-align:right;">
+                      Precio
+                    </th>
+                    <th style="border:1px solid #333;padding:8px;background:#333;color:#fff;font-size:14px;text-align:right;">
+                      Total
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="linea : ${EmailFacturaDTO.lineas}">
+                    <td style="border:1px solid #333;padding:8px;font-size:14px;">
+                      <span th:text="${linea.concepto}"></span>
+                    </td>
+                    <td style="border:1px solid #333;padding:8px;font-size:14px;text-align:center;">
+                      <span th:text="${linea.cantidad}"></span>
+                    </td>
+                    <td style="border:1px solid #333;padding:8px;font-size:14px;text-align:right;">
+                      <span th:text="${linea.precio}"></span>
+                    </td>
+                    <td style="border:1px solid #333;padding:8px;font-size:14px;text-align:right;">
+                      <span th:text="${linea.total}"></span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:20px;">
+              <table width="100%">
+                <tr>
+                  <td></td>
+                  <td width="300">
+                    <table width="100%">
+                      <tr>
+                        <td style="font-size:14px;padding:5px 0;">
+                          Subtotal
+                        </td>
+                        <td align="right" style="font-size:14px;padding:5px 0;">
+                          <span th:text="${EmailFacturaDTO.subtotal}"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:14px;padding:5px 0;">
+                          IVA (21%)
+                        </td>
+                        <td align="right" style="font-size:14px;padding:5px 0;">
+                          <span th:text="${EmailFacturaDTO.iva}"></span>
+                        </td>
+                      </tr>
+                      <tr>
+                        <td style="font-size:16px;font-weight:bold;padding-top:10px;border-top:1px solid #333;">
+                          Total
+                        </td>
+                        <td align="right" style="font-size:16px;font-weight:bold;padding-top:10px;border-top:1px solid #333;">
+                          <span th:text="${EmailFacturaDTO.total}"></span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:20px;border-top:1px solid #dddddd;text-align:center;font-size:13px;color:#666;">
+              Taller Mecánico<br>
+              Calle Mayor 21<br>
+              tallerMecanico@gmail.com<br>
+              Tel: 000-000-000
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>
