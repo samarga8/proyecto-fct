@@ -27,3 +27,6 @@ yarn-error.log*
 *.swo
 .DS_Store
 Thumbs.db
+
+# Secrets
+sistema-taller-backend/src/main/resources/application.properties
