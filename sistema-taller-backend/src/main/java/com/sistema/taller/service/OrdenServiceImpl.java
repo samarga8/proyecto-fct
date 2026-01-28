@@ -72,9 +72,6 @@ public class OrdenServiceImpl {
                 .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
         orden.setVehiculo(vehiculo);
 
-        Empleado empleado = empleadoRepository.findById(dto.getEmpleadoId())
-                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-        orden.setEmpleado(empleado);
 
         orden.setDescripcion(dto.getDescripcion());
         orden.setFecha(dto.getFecha());
@@ -97,14 +94,13 @@ public class OrdenServiceImpl {
                 .map(Servicio::getPrecio)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
         orden.setTotalServicios(totalServicio);
-
         orden.setTotalGeneral(dto.getTotalGeneral());
         orden.setTotalPiezas(dto.getTotalPiezas());
 
         // Guardar la orden y servicios 
         ordenRepository.save(orden);
 
-        // Procesar piezas utilizadas
+        // piezas utilizadas
         if (dto.getPiezas() != null && !dto.getPiezas().isEmpty()) {
             List<MovimientoInventario> movimientos = new ArrayList<>();
 
@@ -125,7 +121,6 @@ public class OrdenServiceImpl {
                 movimiento.setFecha(LocalDate.now());
                 movimiento.setInventario(inventario);
                 movimiento.setOrden(orden);
-
                 movimientos.add(movimiento);
             }
 
@@ -146,6 +141,8 @@ public class OrdenServiceImpl {
         for (Orden orden : ordenes) {
             dtos.add(mapper.map(orden, OrdenTrabajoDTO.class));
         }
+
+        
 
         return dtos;
     }
@@ -182,6 +179,7 @@ public class OrdenServiceImpl {
 
             dtos.add(dto);
         }
+        
         return dtos;
     }
 
@@ -234,7 +232,7 @@ public class OrdenServiceImpl {
                 && orden.getFactura() == null) {
 
             Factura factura = new Factura();
-            factura.setNumeroFactura(generarNumeroFactura());
+            factura.setNumeroFactura(generarNumeroOrden());
             factura.setOrden(orden);
             factura.setCliente(orden.getCliente());
             factura.setVehiculo(orden.getVehiculo());
@@ -318,15 +316,4 @@ public class OrdenServiceImpl {
         return dto;
     }
 
-    public String generarNumeroFactura() {
-        LocalDate hoy = LocalDate.now();
-        int year = hoy.getYear();
-
-        LocalDate startOfYear = LocalDate.of(year, 1, 1);
-        LocalDate endOfYear = LocalDate.of(year, 12, 31);
-        long count = facturaRepository.countByFechaBetween(startOfYear, endOfYear);
-        long siguienteNumero = count + 1;
-
-        return String.format("FAC-%d%03d", year, siguienteNumero);
-    }
 }

@@ -8,6 +8,7 @@ import {
   Package,
   Receipt,
   LogOut,
+  Calendar,
 } from "lucide-react";
 import { Button } from "../../components/ui/button";
 import {
@@ -118,6 +119,11 @@ const Dashboard = () => {
           label: 'Inventario',
           icon: 'Package'
         },
+        {
+          path: '/citas',
+          label: 'Citas',
+          icon: 'Calendar'
+        },
         
       );
     }
@@ -155,6 +161,7 @@ const Dashboard = () => {
                         {link.icon === "ClipboardList" && <ClipboardList className="h-4 w-4 mr-3" />}
                         {link.icon === "Receipt" && <Receipt className="h-4 w-4 mr-3" />}
                         {link.icon === "Package" && <Package className="h-4 w-4 mr-3" />}
+                        {link.icon === "Calendar" && <Calendar className="h-4 w-4 mr-3" />}
                         <span>{link.label}</span>
                       </Link>
                     </SidebarMenuButton>

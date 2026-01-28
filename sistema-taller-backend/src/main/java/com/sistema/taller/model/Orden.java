@@ -18,7 +18,7 @@ public class Orden {
 
     private String numeroOrden;
 
-    private LocalDate fecha; 
+    private LocalDate fecha;
 
     private LocalDate fechaCreacion;
 
@@ -61,20 +61,17 @@ public class Orden {
     @OneToMany(mappedBy = "orden", cascade = CascadeType.ALL)
     private List<MovimientoInventario> movimientos = new ArrayList<>();
 
-    @PrePersist
-    public void prePersist() {
-        this.fechaCreacion = LocalDate.now();
-        this.estadoOrden = EstadoOrden.PENDIENTE;
+    @OneToOne(mappedBy = "orden")
+    private Cita cita;
+
+    public Cita getCita() {
+        return cita;
     }
 
-    @PreUpdate
-    public void preUpdate() {
-        if (this.estadoOrden == null) {
-            throw new IllegalStateException("Intento de guardar una orden con estadoOrden null");
-        }
+    public void setCita(Cita cita) {
+        this.cita = cita;
     }
 
-    
 
     public BigDecimal getTotalServicios() {
         return totalServicios;

@@ -65,10 +65,6 @@ const NuevaOrdenServicio = () => {
         setLoading(true);
         setError(null);
 
-        if (!id) {
-          throw new Error("ID de vehículo no proporcionado");
-        }
-
         // Cargar vehículo e inventario en paralelo
         const [vehiculoData, inventarioData] = await Promise.all([
           obtenerVehiculoPorId(Number(id)),

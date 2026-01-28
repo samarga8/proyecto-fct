@@ -13,7 +13,7 @@ public class Authority implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
-        return "ROLE_" + authority.name();
+        return authority.name();
     }
 
 }

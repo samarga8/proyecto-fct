@@ -41,9 +41,6 @@ const GestionOrdenes = () => {
 
 
   const obtenerTecnicoDisponible = (): number | null => {
-    if (!Array.isArray(tecnicos) || tecnicos.length === 0) {
-      return null;
-    }
     return tecnicos[0].id;
   };
 
@@ -61,20 +58,12 @@ const GestionOrdenes = () => {
         obtenerEstadisticasOrdenes()
       ]);
       
-      // Asegurar que ordenesData sea un array
-      const ordenesArray = Array.isArray(ordenesData) ? ordenesData : [];
-      setOrdenes(ordenesArray);
-      setFilteredOrdenes(ordenesArray);
-      
-      // Asegurar que tecnicosData sea un array
-      const tecnicosArray = Array.isArray(tecnicosData) ? tecnicosData : [];
-      setTecnicos(tecnicosArray);
-      
-      // Establecer estadísticas
+      setOrdenes(ordenesData);
+      setTecnicos(tecnicosData);
       setEstadisticas(estadisticasData);
     } catch (error: any) {
       toast.error(error.message || "Error al cargar los datos");
-      // En caso de error, asegurar que los estados tengan valores por defecto
+      // asegurar que los estados tengan valores por defecto
       setOrdenes([]);
       setFilteredOrdenes([]);
       setTecnicos([]);
@@ -113,7 +102,6 @@ const GestionOrdenes = () => {
   
     try {
       setActualizandoEstado(true);
-      
       // asignar tecnico si empleadoId es null
       let empleadoIdFinal: number | undefined = selectedOrden.empleadoId || undefined;
       
@@ -247,6 +235,8 @@ const GestionOrdenes = () => {
 
 const getEstadoBadgeVariant = (estado: EstadoOrden) => {
   switch (estado) {
+    case "ORIGINAR":
+        return "default";  
     case "PENDIENTE":
       return "outline";
     case "EN_PROGRESO":
@@ -440,23 +430,34 @@ const getEstadoBadgeVariant = (estado: EstadoOrden) => {
                                 <Eye className="mr-2 h-4 w-4" />
                                 Ver detalles
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => {
-                                setSelectedOrden(orden);
-                                setNuevoEstado(orden.estado);
-                                setIsUpdateDialogOpen(true);
-                              }}>
+                              {orden.estado === "ORIGINAR" && (
+                                <DropdownMenuItem
+                                  onClick={() => navigate(`/admin/vehiculos/nueva-orden/${orden.vehiculoId}`)}
+                                >
+                                  <Play className="mr-2 h-4 w-4" />
+                                  Originar orden
+                                </DropdownMenuItem>
+                              )}
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setSelectedOrden(orden);
+                                  setNuevoEstado(orden.estado);
+                                  setIsUpdateDialogOpen(true);
+                                }}
+                              >
                                 <AlertCircle className="mr-2 h-4 w-4" />
                                 Actualizar estado
                               </DropdownMenuItem>
-                              <DropdownMenuItem onClick={() => {
-                                setSelectedOrden(orden);
-                                setNuevoTecnico("");
-                                setIsAsignarDialogOpen(true);
-                              }}>
+                              <DropdownMenuItem
+                                onClick={() => {
+                                  setSelectedOrden(orden);
+                                  setNuevoTecnico("");
+                                  setIsAsignarDialogOpen(true);
+                                }}
+                              >
                                 <FileText className="mr-2 h-4 w-4" />
                                 Asignar técnico
                               </DropdownMenuItem>
-                             
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>

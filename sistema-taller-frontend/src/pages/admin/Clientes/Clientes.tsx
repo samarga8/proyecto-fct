@@ -120,9 +120,6 @@ const Clientes = () => {
       <main className="p-6 space-y-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <Button variant="outline" size="icon" onClick={() => navigate("/admin/dashboard")}>
-              <ArrowLeft className="h-4 w-4" />
-            </Button>
             <div>
               <h1 className="text-2xl font-semibold">Clientes</h1>
               <p className="text-muted-foreground">Gestiona los clientes de tu taller</p>

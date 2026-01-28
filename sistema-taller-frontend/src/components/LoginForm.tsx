@@ -38,7 +38,7 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>;
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const navigate = useNavigate(); // Agregar hook useNavigate
+  const navigate = useNavigate(); 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,26 +49,18 @@ const LoginForm = () => {
   function onSubmit(data: FormData) {
     setIsLoading(true);
     
-    // Convertir el formato de los datos para que coincida con lo que espera el backend
     const credentials = {
       username: data.username,
       password: data.password
     };
     
-    login(credentials)
-      .then((response) => {
-        console.log("Login exitoso:", response.data);
+    login(credentials).then(() => {
         toast.success("Inicio de sesión exitoso");
         
-        // Obtener información del usuario actual después del login
-        getCurrentUser()
-          .then((userResponse) => {
+        // información del usuario actual
+        getCurrentUser().then((userResponse) => {
             setUser(userResponse.data);
-            // Redirigir al usuario al dashboard
-            // En lugar de:
-            // navigate('/dashboard');
-            
-            // Usa:
+           
             const userRole = getUserRole();
             if (userRole === 'ADMINISTRADOR') {
               navigate('/admin/dashboard');
@@ -79,16 +71,11 @@ const LoginForm = () => {
             }
           })
           .catch((userError) => {
-            console.error("Error al obtener información del usuario:", userError);
-            console.error("Detalles del error:", userError.response?.data || userError.message);
             toast.error("Error al obtener información del usuario");
-            // Aún así redirigimos al dashboard
             navigate('/dashboard');
           });
       })
       .catch((error) => {
-        console.error("Error de login:", error);
-        console.error("Detalles del error:", error.response?.data || error.message);
         toast.error(error.response?.data?.mensaje || "Error al iniciar sesión");
       })
       .finally(() => {

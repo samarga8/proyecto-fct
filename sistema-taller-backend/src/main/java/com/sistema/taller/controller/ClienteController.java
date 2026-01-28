@@ -35,12 +35,10 @@ public class ClienteController {
                     .body(Map.of("error", "Error al guardar el cliente."));
         }
     }
-
     @GetMapping("/listar")
     public ResponseEntity<List<ClienteResponseDTO>> listarClientes() {
         return ResponseEntity.ok(service.listarClientes());
     }
-
     @GetMapping("/obtener/{dni}")
     public ResponseEntity<Cliente> obtenerCliente(@PathVariable String dni) {
 
@@ -50,7 +48,6 @@ public class ClienteController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
     @GetMapping("/obtenerCliente/{id}")
     public ResponseEntity<Cliente> obtenerClientePorId(@PathVariable long id) {
 
@@ -60,12 +57,10 @@ public class ClienteController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
     @GetMapping("/{clienteId}/vehiculos")
     public List<VehiculoResponseDTO> getVehiculosPorCliente(@PathVariable long clienteId) {
         return service.obtenerVehiculosPorCliente(clienteId);
     }
-
     @PutMapping("/editarCliente/{id}")
     public ResponseEntity<?> actualizarCliente(@PathVariable long id, @RequestBody Cliente cliente) {
         try {

@@ -7,11 +7,8 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Dashboard from "./pages/admin/Dashboard";
-// Importar los guards
-import AuthGuard from "./guards/AuthGuard";
-import AdminGuard from "./guards/AdminGuard";
-import MecanicoGuard from "./guards/MecanicoGuard";
 
+import RoleGuard from "./guards/RoleGuard";
 
 import Clientes from "./pages/admin/Clientes/Clientes";
 import Vehiculos from "./pages/admin/Vehiculos/Vehiculos";
@@ -34,31 +31,33 @@ import NuevaFactura from "./pages/admin/Factura/NuevaFactura";
 import DetalleFactura from "./pages/admin/Factura/DetalleFactura";
 import PagoStripe from "./components/PagoStripe";
 import PagoConfirmacion from "./components/PagoConfirmacion";
+import Citas from "./pages/admin/Citas/Citas";
+import NuevaCita from "./pages/admin/Citas/NuevaCita";
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient(); // React Query se utiliza para centralizar y optimizar la gestión de peticiones al backend.
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
-      <Toaster />
+      <Toaster /> 
       <HelmetProvider>
-        <BrowserRouter>
+        <BrowserRouter> 
           <Routes>
             {/* Rutas públicas */}
             <Route path="/" element={<Home />} />
             <Route path="/login" element={<Login />} />
             <Route path="/registro" element={<Register />} />
           
-            {/* Rutas protegidas para cualquier usuario autenticado */}
-            <Route element={<AuthGuard />}>
+            {/* Rutas compartidas para Administrador y Mecanico */}
+            <Route element={<RoleGuard allowedRoles={['ADMINISTRADOR', 'MECANICO']} />}>
               <Route path="/dashboard" element={<Dashboard />} />
               <Route element={<Dashboard />}>
                 <Route path="/ordenes/orden-detalle/:id" element={<OrdenDetalle />} />
               </Route>
             </Route>
 
-            {/* Rutas protegidas solo para administradores */}
-            <Route element={<AdminGuard />}>
+            {/* Rutas solo para administradores */}
+            <Route element={<RoleGuard allowedRoles={['ADMINISTRADOR']} />}>
               <Route element={<Dashboard />}>
                 <Route path="/admin/dashboard" element={<Navigate to="/admin/ordenes-trabajo" replace />} />
                 <Route path="/admin/clientes" element={<Clientes />} />
@@ -85,13 +84,16 @@ const App = () => (
               <Route path="/admin/inventario/detalles/:id" element={<ProductoDetalle />} />
               <Route path="/admin/inventario/editar/:id" element={<EditarProducto />} />
               <Route path="/admin/inventario/stock/:id" element={<AñadirStock />} />
+
+              <Route path="/admin/citas" element={<Citas />} />
+              <Route path="/admin/citas/nueva" element={<NuevaCita />} />
               
-              {/* Otras rutas específicas */}
+              
               </Route>
             </Route>
 
-            {/* Rutas protegidas solo para mecánicos */}
-            <Route element={<MecanicoGuard />}>
+            {/* Rutas solo para mecanicos */}
+            <Route element={<RoleGuard allowedRoles={['MECANICO']} />}>
               <Route element={<Dashboard />}>
                 <Route path="/mecanico/dashboard" element={<Navigate to="/mecanico/ordenes-trabajo" replace />} />
                 <Route path="/mecanico/ordenes-trabajo" element={<Ordenes />} />

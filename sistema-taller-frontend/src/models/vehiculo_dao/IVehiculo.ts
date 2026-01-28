@@ -10,6 +10,6 @@ export interface IVehiculo {
   kilometraje: number;
   combustible?: string; 
   transmision?: string; 
-  estadoVehiculo:string
+  estadoVehiculo?:string
   cliente: ICliente;
 }

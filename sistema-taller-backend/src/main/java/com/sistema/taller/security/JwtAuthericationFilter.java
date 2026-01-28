@@ -28,37 +28,21 @@ public class JwtAuthericationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        String uri = request.getRequestURI();
-
-        final String authorizationHeader = request.getHeader("Authorization");
-        logger.info("Authorization Header: " + authorizationHeader);
-
-        // Evitar aplicar el filtro a rutas públicas
-        if (uri.startsWith("/empleados/") ||
-                uri.equals("/generate-token") ||
-                uri.equals("/create-checkout-session") ||
-                request.getMethod().equalsIgnoreCase("OPTIONS")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String requestTokenHeader = request.getHeader("Authorization");
         String username = null;
         String jwtToken = null;
-
         if (requestTokenHeader != null && requestTokenHeader.startsWith("Bearer ")) {
             jwtToken = requestTokenHeader.substring(7);
             try {
                 username = this.jwtUtil.extractUsername(jwtToken);
             } catch (ExpiredJwtException e) {
-                System.out.println("El token ha expirado");
+                logger.warn("El token ha expirado");
             } catch (Exception e) {
-                e.printStackTrace();
+                logger.error("Error al procesar el token", e);
             }
         } else {
-            System.out.println("Token invalido, no empieza con Bearer");
+            logger.debug("Token no presente o no empieza con Bearer");
         }
-
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = service.loadUserByUsername(username);
             if (jwtUtil.validateToken(jwtToken, userDetails)) {
@@ -67,10 +51,9 @@ public class JwtAuthericationFilter extends OncePerRequestFilter {
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authToken);
             } else {
-                System.out.println("El token no es válido");
+                logger.warn("El token no es válido");
             }
         }
-
         filterChain.doFilter(request, response);
     }
 

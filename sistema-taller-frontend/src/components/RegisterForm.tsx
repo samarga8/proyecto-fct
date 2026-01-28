@@ -26,6 +26,7 @@ import {
 import { Input } from "../components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../components/ui/select";
 import { Loader2, UserPlus } from "lucide-react";
+
 const formSchema = z.object({
   nombre: z.string().min(2, {
     message: "El nombre debe tener al menos 2 caracteres.",
@@ -86,11 +87,9 @@ const RegisterForm = () => {
   try {
     const { confirmPassword, ...cleanedData } = data;
     const response = await register(cleanedData);
-    console.log("Registration response:", response.data);
     toast.success("Registro exitoso");
     navigate("/login");
   } catch (error) {
-    console.error("Error durante el registro:", error);
     toast.error("Error al registrar usuario. Por favor, intenta nuevamente.");
   } finally {
     setIsLoading(false);

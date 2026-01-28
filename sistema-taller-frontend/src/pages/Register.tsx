@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import RegisterForm from "../components/RegisterForm";
-import { Car, Wrench, Shield, UserPlus } from "lucide-react";
+import { Car, Shield, UserPlus } from "lucide-react";
 const Register = () => {
   return (
     <>

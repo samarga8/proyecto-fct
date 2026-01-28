@@ -6,10 +6,10 @@ public class VehiculoResponseDTO {
     private Long id;
     private String marca;
     private String modelo;
-    private String matricula;
     private Integer anio;
-    private Integer kilometraje;
+    private String matricula;
     private String color;
+    private Integer kilometraje;
     private ClienteSimpleDTO cliente;
     private String combustible;
     private String transmision;

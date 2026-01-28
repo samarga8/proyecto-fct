@@ -25,16 +25,11 @@ const PagoForm: React.FC<PagoFormProps> = ({ factura, onSuccess, onCancel }) => 
 
     const handleSubmit = async (event: React.FormEvent) => {
         event.preventDefault();
-
         if (!stripe || !elements) {
             return;
         }
-
         setLoading(true);
-
         try {
-            const token = localStorage.getItem("token");
-
             const response = await axios.post(`${baseUrl}/pagos/create-payment-intent`, {
                 facturaId: factura.id,
                 amount: factura.subtotal, 
@@ -43,10 +38,6 @@ const PagoForm: React.FC<PagoFormProps> = ({ factura, onSuccess, onCancel }) => 
                     facturaId: factura.id.toString(),
                     facturaNumero: factura.numeroFactura,
                     clienteNombre: factura.clienteNombreCompleto
-                }
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
                 }
             });
 
@@ -69,12 +60,12 @@ const PagoForm: React.FC<PagoFormProps> = ({ factura, onSuccess, onCancel }) => 
             if (error) {
                 toast.error(`Error en el pago: ${error.message}`);
             } else if (paymentIntent.status === 'succeeded') {
-                // Redirigir a la página de confirmación con los parámetros necesarios
+                // Redirige a la pagina de confirmación con los parametros necesarios
                 window.location.href = `/admin/facturacion/confirmacion?payment_intent_id=${paymentIntent.id}&facturaId=${factura.id}`;
                 
             }
         } catch (error) {
-            console.error('Error:', error);
+
             toast.error('Error al procesar el pago');
         } finally {
             setLoading(false);

@@ -13,8 +13,8 @@ const Header = () => {
           <div className="flex-shrink-0 flex items-center">
             <Car className="h-8 w-8 text-secondary mr-2" />
             <span className="font-bold text-lg text-foreground">
-              <span className="text-primary">Taller</span>
-              <span className="text-secondary">Mecánico</span>
+              <span className="text-primary">Auto</span>
+              <span className="text-secondary">Taller</span>
             </span>
           </div>
           

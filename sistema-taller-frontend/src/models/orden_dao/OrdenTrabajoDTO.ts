@@ -21,4 +21,4 @@ export interface OrdenTrabajoDTO {
   observaciones?: string;
 }
 
-export type EstadoOrden = "PENDIENTE" | "EN_PROGRESO" | "COMPLETADA" | "CANCELADA" | "PAUSADA";
+export type EstadoOrden = "ORIGINAR" | "PENDIENTE" | "EN_PROGRESO" | "COMPLETADA" | "PAUSADA";

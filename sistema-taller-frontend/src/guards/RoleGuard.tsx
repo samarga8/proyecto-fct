@@ -26,7 +26,6 @@ const RoleGuard: React.FC<RoleGuardProps> = ({ allowedRoles }) => {
     return <Navigate to="/mecanico/dashboard" replace />;
   }
   
-  // Fallback a la página principal
   return <Navigate to="/" replace />;
 };
 

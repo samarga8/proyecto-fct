@@ -23,17 +23,18 @@ import java.util.Map;
 @RequestMapping("/pagos")
 public class CheckoutSessionController {
 
+        @PostConstruct
+        public void init() {
+                Stripe.apiKey = stripeApiKey;
+        }
+
         @Value("${stripe.key.secret}")
         private String stripeApiKey;
 
         @Autowired
         private FacturaRepository repoFact;
 
-        @PostConstruct
-        public void init() {
-                Stripe.apiKey = stripeApiKey;
-        }
-
+      
         @PostMapping("/create-payment-intent")
         public ResponseEntity<Map<String, Object>> createPaymentIntent(
                         @RequestBody PaymentIntentRequest request) throws StripeException {
@@ -46,7 +47,6 @@ public class CheckoutSessionController {
                 if (metadata != null) {
                         params.put("metadata", metadata);
                 }
-
                 PaymentIntent intent = PaymentIntent.create(params);
                 if ("succeeded".equals(intent.getStatus()) && metadata != null && metadata.containsKey("facturaId")) {
                         Long facturaId = Long.parseLong(metadata.get("facturaId"));
@@ -59,7 +59,6 @@ public class CheckoutSessionController {
 
                 Map<String, Object> responseData = new HashMap<>();
                 responseData.put("client_secret", intent.getClientSecret());
-
                 return ResponseEntity.ok(responseData);
         }
 
@@ -74,7 +73,6 @@ public class CheckoutSessionController {
         
                 String status = paymentIntent.getStatus();
         
-              
                 Map<String, Object> params = new HashMap<>();
                 params.put("payment_intent", paymentIntentId);
                 ChargeCollection charges = Charge.list(params);
