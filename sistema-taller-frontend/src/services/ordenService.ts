@@ -21,6 +21,19 @@ export const crearOrdenServicio = async (ordenData: OrdenServicioDTO) => {
   }
 };
 
+// Función para originar una orden existente (estado ORIGINAR -> PENDIENTE)
+export const originarOrdenServicio = async (ordenData: OrdenServicioDTO) => {
+  try {
+    const response = await axios.post(`${baseUrl}/ordenes/originar`, ordenData);
+    return response.data;
+  } catch (error: any) {
+    if (error.response && error.response.data && error.response.data.error) {
+      throw new Error(error.response.data.error);
+    }
+    throw new Error('Error al originar la orden de servicio');
+  }
+};
+
 
 export const listarOrdenes = async () => {
   try {

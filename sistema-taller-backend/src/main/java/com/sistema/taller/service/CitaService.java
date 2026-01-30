@@ -79,6 +79,7 @@ public class CitaService {
         orden.setEstadoOrden(EstadoOrden.ORIGINAR);
         orden.setFecha(fecha);
         orden.setNumeroOrden(generarNumeroOrden());
+        orden.setDescripcion(dto.getServicio());
 
         // Crear cita
         Cita cita = new Cita();

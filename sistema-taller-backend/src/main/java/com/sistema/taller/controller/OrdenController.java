@@ -27,6 +27,12 @@ public class OrdenController {
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaOrden);
     }
 
+    @PostMapping("/originar")
+    public ResponseEntity<Orden> originarOrden(@RequestBody OrdenServicioDTO dto) {
+        Orden nuevaOrden = ordenService.originarOrden(dto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaOrden);
+    }
+
     @GetMapping("/por-vehiculo/{vehiculoId}")
     public ResponseEntity<List<OrdenTrabajoDTO>> obtenerOrdenesPorVehiculo(@PathVariable Long vehiculoId) {
         return ResponseEntity.ok(ordenService.obtenerOrdenesPorVehiculo(vehiculoId));

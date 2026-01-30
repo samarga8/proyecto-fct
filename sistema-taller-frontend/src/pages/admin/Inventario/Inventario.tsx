@@ -180,7 +180,7 @@ function Inventario() {
                               ? "success"
                               : producto.estado?.toLowerCase() === "bajo"
                                 ? "warning"
-                                : producto.estado?.toLowerCase() === "crítico"
+                                : producto.estado?.toLowerCase() === "critico"
                                   ? "destructive"
                                   : "outline"
                           }

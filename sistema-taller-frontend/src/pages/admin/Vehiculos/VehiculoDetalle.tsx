@@ -144,13 +144,6 @@ const VehiculoDetalle = () => {
                   <h2 className="text-xl font-semibold">{vehiculo.marca} {vehiculo.modelo} {vehiculo.anio}</h2>
                   <p className="text-muted-foreground">Matrícula: {vehiculo.matricula}</p>
                 </div>
-
-                <Badge className="ml-auto" variant={
-                  vehiculo.estadoVehiculo === "En taller" ? "default" :
-                    vehiculo.estadoVehiculo === "Programado" ? "outline" : "secondary"
-                }>
-                  {vehiculo.estadoVehiculo}
-                </Badge>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>

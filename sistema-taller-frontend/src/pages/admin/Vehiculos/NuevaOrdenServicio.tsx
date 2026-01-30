@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { Button } from "../../../components/ui/button";
 import { Label } from "../../../components/ui/label";
@@ -18,9 +18,10 @@ import { ArrowLeft, Calendar as CalendarIcon, Save, Plus, X, Package } from "luc
 import { cn } from "../../../lib/utils";
 import { obtenerVehiculoPorId } from "../../../services/vehiculoService";
 import { IVehiculo } from "../../../models/vehiculo_dao/IVehiculo";
-import { crearOrdenServicio } from "../../../services/ordenService";
+import { crearOrdenServicio, originarOrdenServicio } from "../../../services/ordenService";
 import { ServicioOrdenDTO } from "../../../models/servicio_dao/ServicioOrdenDTO";
 import { OrdenServicioDTO } from "../../../models/orden_dao/OrdenServicioDTO";
+import { EstadoOrden } from "../../../models/orden_dao/OrdenTrabajoDTO";
 import { listarProductos } from "../../../services/inventarioService";
 import { InventarioDTO } from "../../../models/inventario_dao/InventarioDTO";
 import { PiezaOrdenDTO } from "../../../models/orden_dao/PiezaOrdenDTO";
@@ -38,6 +39,8 @@ interface PiezaSeleccionada {
 const NuevaOrdenServicio = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const ordenId = searchParams.get("ordenId") || undefined;
   const [vehiculo, setVehiculo] = useState<IVehiculo | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -45,6 +48,7 @@ const NuevaOrdenServicio = () => {
   const [serviciosSeleccionados, setServiciosSeleccionados] = useState<ServicioOrdenDTO[]>([]);
   const [descripcion, setDescripcion] = useState<string>("");
   const [esUrgente, setEsUrgente] = useState<boolean>(false);
+  const [estadoInicial, setEstadoInicial] = useState<EstadoOrden>(ordenId ? "ORIGINAR" : "PENDIENTE");
 
   // Estados para el formulario de servicios
   const [nombreServicio, setNombreServicio] = useState<string>("");
@@ -95,9 +99,7 @@ const NuevaOrdenServicio = () => {
     if (!nombreServicio) {
       errores.nombre = "El concepto es obligatorio";
     }
-    if(!descripcion){
-      errores.descripcion = "La descripción es obligatoria";
-    }
+
 
     setErroresFormulario(errores);
     return Object.keys(errores).length === 0;
@@ -242,13 +244,14 @@ const NuevaOrdenServicio = () => {
       }));
 
       const ordenData: OrdenServicioDTO = {
+        id: ordenId,
         clienteId: vehiculo.cliente.id,
         vehiculoId: vehiculo.id,
         empleadoId: 1,
         fecha: date,
         esUrgente,
         descripcion,
-        estado: "PENDIENTE",
+        estado: estadoInicial,
         servicios: serviciosSeleccionados,
         piezas: piezasDTO,
         totalServicios,
@@ -257,7 +260,11 @@ const NuevaOrdenServicio = () => {
         totalGeneral
       };
 
-      await crearOrdenServicio(ordenData);
+      if (estadoInicial === "ORIGINAR" && ordenId) {
+        await originarOrdenServicio(ordenData);
+      } else {
+        await crearOrdenServicio(ordenData);
+      }
 
       toast.success("Orden de servicio creada correctamente");
       navigate("/admin/vehiculos");
@@ -337,6 +344,22 @@ const NuevaOrdenServicio = () => {
                 <div className="flex items-center space-x-2">
                   <Checkbox id="urgente" checked={esUrgente} onCheckedChange={(checked) => setEsUrgente(!!checked)} />
                   <Label htmlFor="urgente">Marcar como urgente</Label>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="origen-orden">Origen de la orden</Label>
+                  <Select
+                    value={estadoInicial}
+                    onValueChange={(value: EstadoOrden) => setEstadoInicial(value)}
+                  >
+                    <SelectTrigger id="origen-orden">
+                      <SelectValue placeholder="Seleccionar origen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="PENDIENTE">Orden directa</SelectItem>
+                      <SelectItem value="ORIGINAR">Originada desde cita</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <Separator />

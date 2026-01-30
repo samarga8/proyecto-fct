@@ -74,15 +74,10 @@ public class InventarioServiceImpl {
     }
 
     public List<InventarioDTO> listarProductos() {
-        List<Inventario> articulos = inventarioRepository.findAll();
-        List<InventarioDTO> lista = new ArrayList<>();
-        for (Inventario i : articulos) {
-            InventarioDTO dto = modelMapper.map(i, InventarioDTO.class);
-            lista.add(dto);
-        }
-
-        return lista.stream()
-                .sorted(Comparator.comparing(InventarioDTO::getNombre)) // Ordena por nombre
+        return inventarioRepository.findAll().stream()
+                .peek(this::actualizarEstadoSegunStock) 
+                .map(i -> modelMapper.map(i, InventarioDTO.class))
+                .sorted(Comparator.comparing(InventarioDTO::getNombre))
                 .collect(Collectors.toList());
     }
 
@@ -148,7 +143,8 @@ public class InventarioServiceImpl {
 
     public InventarioDTO actualizarStock(MovimientoStockDTO dto) {
         Inventario inventario = inventarioRepository.findById(dto.getProductoId())
-                .orElseThrow(() -> new EntityNotFoundException("Producto no encontrado con ID: " + dto.getProductoId()));
+                .orElseThrow(
+                        () -> new EntityNotFoundException("Producto no encontrado con ID: " + dto.getProductoId()));
 
         int cantidad = dto.getCantidad();
 
@@ -173,14 +169,14 @@ public class InventarioServiceImpl {
     }
 
     private void actualizarEstadoSegunStock(Inventario inventario) {
-     if (inventario.getStockActual() == 0) {
-        inventario.setEstado("critico");
-    } else if (inventario.getStockActual() <= inventario.getStockMinimo()) {
-        inventario.setEstado("bajo");
-    }else {
-        inventario.setEstado("disponible");
-    }
+        if (inventario.getStockActual() <= 0) {
+            inventario.setEstado("critico");
+        } else if (inventario.getStockActual() <= inventario.getStockMinimo()) {
+            inventario.setEstado("bajo");
+        } else {
+            inventario.setEstado("disponible");
+        }
 
-}
+    }
 
 }

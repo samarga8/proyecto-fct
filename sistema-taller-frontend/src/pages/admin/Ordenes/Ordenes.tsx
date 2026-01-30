@@ -1,5 +1,5 @@
 import { Helmet } from "react-helmet-async";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "../../../components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "../../../components/ui/table";
@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "../..
 import { Badge } from "../../../components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "../../../components/ui/tabs";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../../../components/ui/dropdown-menu";
-import { MoreHorizontal, Plus, FileText, Eye, Play, AlertCircle, CheckCircle2, ArrowLeft, Loader2 } from "lucide-react";
+import { MoreHorizontal, Plus, FileText, Eye, Play, AlertCircle, CheckCircle2, Loader2 } from "lucide-react";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "../../../components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../../components/ui/select";
 import { Label } from "../../../components/ui/label";
@@ -236,7 +236,7 @@ const GestionOrdenes = () => {
 const getEstadoBadgeVariant = (estado: EstadoOrden) => {
   switch (estado) {
     case "ORIGINAR":
-        return "default";  
+        return "warning";  
     case "PENDIENTE":
       return "outline";
     case "EN_PROGRESO":
@@ -362,7 +362,7 @@ const getEstadoBadgeVariant = (estado: EstadoOrden) => {
                   <TableHead>Vehículo</TableHead>
                   <TableHead>Fecha</TableHead>
                   <TableHead>Técnico</TableHead>
-                  <TableHead>Servicio</TableHead>
+                  <TableHead>Descripción</TableHead>
                   <TableHead>Estado</TableHead>
                   <TableHead className="w-[120px]">Acciones</TableHead>
                 </TableRow>
@@ -385,7 +385,7 @@ const getEstadoBadgeVariant = (estado: EstadoOrden) => {
                       <TableCell>{orden.vehiculoInfo}</TableCell>
                       <TableCell>{formatearFecha(orden.fecha)}</TableCell>
                       <TableCell>{orden.tecnicoNombre}</TableCell>
-                      <TableCell>{orden.servicios?.[0]?.nombre || 'Sin servicio'}...</TableCell>
+                      <TableCell>{orden.descripcion || 'Sin servicio'}...</TableCell>
                       <TableCell>
                         <Badge variant={getEstadoBadgeVariant(orden.estado)}>
                           {orden.estado}
@@ -432,7 +432,7 @@ const getEstadoBadgeVariant = (estado: EstadoOrden) => {
                               </DropdownMenuItem>
                               {orden.estado === "ORIGINAR" && (
                                 <DropdownMenuItem
-                                  onClick={() => navigate(`/admin/vehiculos/nueva-orden/${orden.vehiculoId}`)}
+                                  onClick={() => navigate(`/admin/vehiculos/nueva-orden/${orden.vehiculoId}?ordenId=${orden.id}`)}
                                 >
                                   <Play className="mr-2 h-4 w-4" />
                                   Originar orden

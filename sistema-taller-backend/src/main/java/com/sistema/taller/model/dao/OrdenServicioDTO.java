@@ -5,9 +5,11 @@ import java.time.LocalDate;
 
 import java.util.List;
 
+import com.sistema.taller.model.EstadoOrden;
 
 public class OrdenServicioDTO {
 
+    private Long id;
     private Long clienteId;
     private Long vehiculoId;
     private Long empleadoId;
@@ -15,8 +17,8 @@ public class OrdenServicioDTO {
     private Boolean esUrgente;
     private String descripcion;
     private List<ServicioOrdenDTO> servicios;
-    private List<PiezaOrdenDTO> piezas; 
-
+    private List<PiezaOrdenDTO> piezas;
+    private EstadoOrden estadoOrden;
     private BigDecimal totalServicios;
     private BigDecimal totalPiezas;
     private BigDecimal subtotal;
@@ -49,8 +51,6 @@ public class OrdenServicioDTO {
         this.fecha = fecha;
     }
 
-  
-
     public Boolean getEsUrgente() {
         return esUrgente;
     }
@@ -74,8 +74,6 @@ public class OrdenServicioDTO {
     public void setPiezas(List<PiezaOrdenDTO> piezas) {
         this.piezas = piezas;
     }
-
-    
 
     public BigDecimal getTotalServicios() {
         return totalServicios;
@@ -123,5 +121,21 @@ public class OrdenServicioDTO {
 
     public void setDescripcion(String descripcion) {
         this.descripcion = descripcion;
+    }
+
+    public EstadoOrden getEstadoOrden() {
+        return estadoOrden;
+    }
+
+    public void setEstadoOrden(EstadoOrden estadoOrden) {
+        this.estadoOrden = estadoOrden;
+    }
+
+   public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 }

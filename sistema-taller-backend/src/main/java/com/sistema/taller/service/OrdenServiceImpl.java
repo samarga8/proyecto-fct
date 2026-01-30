@@ -127,8 +127,88 @@ public class OrdenServiceImpl {
             movimientoInventarioRepository.saveAll(movimientos);
         }
 
+
         return orden;
     }
+
+    @Transactional
+public Orden originarOrden(OrdenServicioDTO dto) {
+
+    Orden orden = ordenRepository.findById(dto.getId())
+            .orElseThrow(() -> new RuntimeException("Orden no encontrada"));
+
+    if (orden.getEstadoOrden() != EstadoOrden.ORIGINAR) {
+        throw new IllegalStateException("La orden no está en estado ORIGINAR");
+    }
+
+    Cliente cliente = clienteRepository.findById(dto.getClienteId())
+            .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
+    orden.setCliente(cliente);
+
+    Vehiculo vehiculo = vehiculoRepository.findById(dto.getVehiculoId())
+            .orElseThrow(() -> new RuntimeException("Vehículo no encontrado"));
+    orden.setVehiculo(vehiculo);
+
+    orden.setDescripcion(dto.getDescripcion());
+    orden.setFecha(dto.getFecha());
+    orden.setFechaCreacion(LocalDate.now());
+    orden.setEsUrgente(dto.getEsUrgente());
+    orden.setEstadoOrden(EstadoOrden.PENDIENTE);
+
+    orden.getServicios().clear();
+
+    List<Servicio> servicios = dto.getServicios().stream().map(serv -> {
+        Servicio s = new Servicio();
+        s.setOrden(orden);
+        s.setNombre(serv.getNombre());
+        s.setPrecio(serv.getPrecio());
+        return s;
+    }).collect(Collectors.toList());
+
+    orden.getServicios().addAll(servicios);
+
+    BigDecimal totalServicio = servicios.stream()
+            .map(Servicio::getPrecio)
+            .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+    orden.setTotalServicios(totalServicio);
+    orden.setTotalPiezas(dto.getTotalPiezas());
+    orden.setTotalGeneral(dto.getTotalGeneral());
+
+    if (dto.getPiezas() != null && !dto.getPiezas().isEmpty()) {
+
+        List<MovimientoInventario> movimientos = new ArrayList<>();
+
+        for (PiezaOrdenDTO piezaDTO : dto.getPiezas()) {
+
+            Inventario inventario = inventarioRepository.findById(piezaDTO.getPiezaId())
+                    .orElseThrow(() -> new RuntimeException("Pieza no encontrada"));
+
+            if (inventario.getStockActual() < piezaDTO.getCantidad()) {
+                throw new RuntimeException("Stock insuficiente para: " + inventario.getNombre());
+            }
+
+            inventario.setStockActual(
+                    inventario.getStockActual() - piezaDTO.getCantidad()
+            );
+
+            MovimientoInventario movimiento = new MovimientoInventario();
+            movimiento.setTipo("Salida");
+            movimiento.setCantidad(piezaDTO.getCantidad());
+            movimiento.setDescripcion(piezaDTO.getNombre());
+            movimiento.setFecha(LocalDate.now());
+            movimiento.setInventario(inventario);
+            movimiento.setOrden(orden);
+
+            movimientos.add(movimiento);
+        }
+
+        movimientoInventarioRepository.saveAll(movimientos);
+    }
+
+    return ordenRepository.save(orden);
+}
+
 
     public List<OrdenTrabajoDTO> obtenerOrdenesPorVehiculo(Long vehiculoId) {
         if (!ordenRepository.existsByVehiculoId(vehiculoId)) {
